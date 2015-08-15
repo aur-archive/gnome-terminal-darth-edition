@@ -1,0 +1,32 @@
+diff --git a/src/terminal-window.c b/src/terminal-window.c
+--- a/src/terminal-window.c
++++ b/src/terminal-window.c
+@@ -1548,11 +1548,17 @@
+   gtk_settings = gtk_settings_get_for_screen (screen);
+ 
+   g_object_set_data_full (G_OBJECT (screen), "GT::HasSettingsConnection",
+                           gtk_settings,
+                           (GDestroyNotify) app_setting_notify_destroy_cb);
++
++#if GTK_CHECK_VERSION (3, 0, 0)
++  g_object_set (G_OBJECT (gtk_settings),
++                "gtk-application-prefer-dark-theme", TRUE,
++                NULL);
++#endif
+ 
+   g_settings_bind (settings,
+                    TERMINAL_SETTING_ENABLE_MNEMONICS_KEY,
+                    gtk_settings,
+                    "gtk-enable-mnemonics",
+                    G_SETTINGS_BIND_GET);
+@@ -1826,6 +1826,10 @@
+ #endif
+ 
+   gtk_window_set_title (GTK_WINDOW (window), _("Terminal"));
++
++#if GTK_CHECK_VERSION (3, 4, 0)
++  gtk_window_set_hide_titlebar_when_maximized (GTK_WINDOW (window), TRUE);
++#endif
+ 
+   priv->active_screen = NULL;
+ 
